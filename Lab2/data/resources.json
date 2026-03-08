@@ -1,0 +1,23 @@
+[
+  {
+    "name": "Central Library",
+    "type": "Study",
+    "location": "Building A, Floor 2",
+    "program": "08:00 - 20:00",
+    "tags": ["quiet", "wifi", "books", "study"]
+  },
+  {  
+    "name": "Main Cafeteria",
+    "type": "Dining",
+    "location": "Student Center",
+    "program": "10:00 - 18:00",
+    "tags": ["food", "social"]
+  },
+  {
+    "name": "Tech Hub",
+    "type": "Learning",
+    "location": "Building C, Room 101",
+    "program": "09:00 - 17:00",
+    "tags": ["computers", "wifi", "study"]
+  }
+]

@@ -1,5 +1,5 @@
 # Proiect - Lab2
-
+-S-ar putea itemele din json sa nu fie displayd din cauza ca browserul blokeaza fetch
 1. **Ce este o resursa în aplicatia ta?**
 - O resursă este un loc din campus (ca Biblioteca sau Cantina) despre care ofer informatii in fisierul JSON (nume, locație, program).
 
@@ -15,4 +15,5 @@ Exemplu: [/pages/library.html#schedule]
 
 4. **Este aplicatia document-centric sau interactive (sau ambele)?**
 Este ambele. Este **document-centric** pentru ca ofera informatii de citit, dar este si **interactiva** pentru ca am folosit JavaScript (fetch) pentru a filtra si afisa datele.
+
 

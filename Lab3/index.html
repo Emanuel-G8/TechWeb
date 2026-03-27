@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light">
+<div class="container">
+
+    <h1 id="welcome">Bun venit!</h1>
+    <p id="visits"></p>
+
+    <nav style="margin: 20px 0; display:flex; gap:10px;">
+        <a href="preferences.html"><button>Setări Preferințe</button></a>
+        <a href="cookies-info.html"><button>Vizualizare Cookies</button></a>
+        <a href="login.html"><button>Autentificare</button></a>
+    </nav>
+
+    <h2>Cookie-uri Active</h2>
+    <table>
+        <thead><tr><th>Nume</th><th>Valoare</th></tr></thead>
+        <tbody id="cookiesTable"></tbody>
+    </table>
+
+    <h2>LocalStorage</h2>
+    <table>
+        <thead><tr><th>Cheie</th><th>Valoare</th></tr></thead>
+        <tbody id="localTable"></tbody>
+    </table>
+
+    <h2>SessionStorage</h2>
+    <table>
+        <thead><tr><th>Cheie</th><th>Valoare</th></tr></thead>
+        <tbody id="sessionTable"></tbody>
+    </table>
+
+    <br>
+    <button class="btn-danger" onclick="deleteAll()">Șterge Tot</button>
+
+</div>
+
+<script src="js/cookies.js"></script>
+<script src="js/storage.js"></script>
+<script>
+
+    const theme = CookieManager.get('theme') || 'light';
+    document.body.className = theme;
+
+
+    const username = CookieManager.get('username') || 'Vizitator';
+    document.getElementById('welcome').textContent = `Bun venit, ${username}!`;
+
+
+    let visits = parseInt(CookieManager.get('visits') || '0') + 1;
+    CookieManager.set('visits', visits, 365);
+    document.getElementById('visits').textContent = `Număr vizite: ${visits}`;
+
+
+    StorageManager.setSession('lastPage', 'index.html');
+
+
+    const allCookies = CookieManager.getAll();
+    const cookiesBody = document.getElementById('cookiesTable');
+    cookiesBody.innerHTML = Object.keys(allCookies).length === 0
+        ? '<tr><td colspan="2">Nu există cookie-uri</td></tr>'
+        : Object.entries(allCookies).map(([k, v]) =>
+            `<tr><td>${k}</td><td>${v}</td></tr>`).join('');
+
+
+    const allLocal = StorageManager.getAllLocal();
+    const localBody = document.getElementById('localTable');
+    localBody.innerHTML = Object.keys(allLocal).length === 0
+        ? '<tr><td colspan="2">Nu există date</td></tr>'
+        : Object.entries(allLocal).map(([k, v]) =>
+            `<tr><td>${k}</td><td>${JSON.stringify(v)}</td></tr>`).join('');
+
+
+    const allSession = StorageManager.getAllSession();
+    const sessionBody = document.getElementById('sessionTable');
+    sessionBody.innerHTML = Object.keys(allSession).length === 0
+        ? '<tr><td colspan="2">Nu există date</td></tr>'
+        : Object.entries(allSession).map(([k, v]) =>
+            `<tr><td>${k}</td><td>${JSON.stringify(v)}</td></tr>`).join('');
+
+
+    function deleteAll() {
+        CookieManager.deleteAll();
+        StorageManager.clearLocal();
+        StorageManager.clearSession();
+        location.reload();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autentificare</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light">
+<div class="container">
+
+    <h1>Autentificare</h1>
+
+    <div id="msg"></div>
+
+    <form id="loginForm">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Introduceți username-ul">
+
+        <br><br>
+
+        <label>Parolă</label>
+        <input type="password" id="password" placeholder="Introduceți parola">
+
+        <br><br>
+
+        <label style="font-weight:normal; display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" id="rememberMe"> Ține-mă minte
+        </label>
+
+        <br>
+
+        <button type="submit">Autentifică-te</button>
+    </form>
+
+    <br>
+    <p>Nu ai cont? <a href="register.html">Înregistrează-te</a></p>
+    <a href="index.html"><button>Înapoi</button></a>
+
+</div>
+
+<script src="js/cookies.js"></script>
+<script src="js/storage.js"></script>
+<script>
+
+    document.body.className = CookieManager.get('theme') || 'light';
+
+
+    if (!StorageManager.getLocal('users')) {
+        StorageManager.setLocal('users', [
+            { id: 1, username: 'admin',   password: 'password',   email: 'admin@example.com' },
+            { id: 2, username: 'student', password: 'student123', email: 'student@example.com' }
+        ]);
+    }
+
+    const remembered = StorageManager.getLocal('rememberedUser');
+    if (remembered) {
+        document.getElementById('username').value = remembered;
+        document.getElementById('rememberMe').checked = true;
+    }
+
+    function showError(text) {
+        const msg     = document.getElementById('msg');
+        msg.className   = 'alert-error';
+        msg.textContent = text;
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const inputUser = document.getElementById('username').value.trim();
+        const inputPass = document.getElementById('password').value;
+        const remember  = document.getElementById('rememberMe').checked;
+
+        const users = StorageManager.getLocal('users') || [];
+        const user  = users.find(u => u.username === inputUser && u.password === inputPass);
+
+        if (user) {
+            StorageManager.setSession('session', {
+                userId:    user.id,
+                username:  user.username,
+                email:     user.email,
+                loginTime: new Date().toISOString(),
+                sessionId: Math.random().toString(36).substring(2)
+            });
+
+            if (remember) {
+                StorageManager.setLocal('rememberedUser', user.username);
+            } else {
+                StorageManager.removeLocal('rememberedUser');
+            }
+
+            window.location.href = 'dashboard.html';
+        } else {
+            showError('Username sau parolă greșite!');
+        }
+    });
+</script>
+</body>
+</html>

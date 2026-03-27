@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light">
+<div class="container">
+    <h1>Înregistrare</h1>
+
+    <div id="msg"></div>
+
+    <form id="registerForm">
+        <label>Username</label>
+        <input type="text" id="username" placeholder="Minim 3 caractere">
+
+        <label>Email</label>
+        <input type="email" id="email" placeholder="ex: user@email.com">
+
+        <label>Parolă</label>
+        <input type="password" id="password" placeholder="Minim 6 caractere">
+
+        <label>Confirmă Parola</label>
+        <input type="password" id="confirmPassword">
+
+        <button type="submit">Creează Cont</button>
+    </form>
+
+    <p>Ai deja cont? <a href="login.html">Autentifică-te</a></p>
+</div>
+
+<script src="js/cookies.js"></script>
+<script src="js/storage.js"></script>
+<script>
+    document.body.className = CookieManager.get('theme') || 'light';
+
+    const form = document.getElementById('registerForm');
+    const msg  = document.getElementById('msg');
+
+    function showError(text) {
+        msg.className = 'alert-error';
+        msg.textContent = text;
+    }
+
+    function showSuccess(text) {
+        msg.className = 'alert-success';
+        msg.textContent = text;
+    }
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        msg.textContent = ''; 
+
+        const username        = document.getElementById('username').value.trim();
+        const email           = document.getElementById('email').value.trim();
+        const password        = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+
+        const users = StorageManager.getLocal('users') || [];
+
+        if (username.length < 3) {
+            return showError('Username trebuie să aibă minim 3 caractere!');
+        }
+
+        if (!/\S+@\S+\.\S+/.test(email)) {
+            return showError('Adresa de email nu este validă!');
+        }
+
+        if (password.length < 6) {
+            return showError('Parola trebuie să aibă minim 6 caractere!');
+        }
+
+        if (password !== confirmPassword) {
+            return showError('Parolele nu coincid!');
+        }
+
+        if (users.find(u => u.username === username)) {
+            return showError('Username-ul este deja folosit!');
+        }
+
+        if (users.find(u => u.email === email)) {
+            return showError('Email-ul este deja înregistrat!');
+        }
+
+        const newUser = {
+            id:       users.length + 1,
+            username: username,
+            password: password,
+            email:    email
+        };
+
+        users.push(newUser);
+        StorageManager.setLocal('users', users);
+
+        showSuccess('Cont creat cu succes! Vei fi redirecționat către login...');
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 2000);
+    });
+</script>
+</body>
+</html>

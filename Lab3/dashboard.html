@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light">
+<div class="container">
+    <h1>Dashboard</h1>
+
+    <div id="sessionInfo">
+        <h2>Informații Sesiune</h2>
+        <table>
+            <tr><th>Câmp</th><th>Valoare</th></tr>
+            <tr><td>ID Sesiune</td><td id="sessionId"></td></tr>
+            <tr><td>Username</td><td id="username"></td></tr>
+            <tr><td>Email</td><td id="email"></td></tr>
+            <tr><td>Ora Autentificării</td><td id="loginTime"></td></tr>
+            <tr><td>Durata Sesiunii</td><td id="duration">0s</td></tr>
+        </table>
+    </div>
+
+    <h2>Date Brute SessionStorage</h2>
+    <pre id="rawSession" style="background:#f4f4f4; padding:10px; border-radius:4px;"></pre>
+
+    <br>
+    <a href="cart.html"><button>Coș de Cumpărături</button></a>
+    <button class="btn-danger" onclick="logout()">Deconectare</button>
+
+    <br><br>
+    <p>
+        <a href="dashboard.html" target="_blank">
+            Deschide într-un tab nou (observă că sessionStorage este diferit!)
+        </a>
+    </p>
+</div>
+
+<script src="js/cookies.js"></script>
+<script src="js/storage.js"></script>
+<script>
+
+const session = StorageManager.getSession('session');
+if (!session) {
+    window.location.href = 'login.html';
+}
+
+
+document.body.className = CookieManager.get('theme') || 'light';
+
+
+document.getElementById('sessionId').textContent = session.sessionId;
+document.getElementById('username').textContent  = session.username;
+document.getElementById('email').textContent     = session.email;
+document.getElementById('loginTime').textContent = new Date(session.loginTime).toLocaleString();
+
+
+setInterval(() => {
+    const seconds = Math.floor((Date.now() - new Date(session.loginTime)) / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const secs    = seconds % 60;
+    document.getElementById('duration').textContent = `${minutes}m ${secs}s`;
+}, 1000);
+
+
+document.getElementById('rawSession').textContent =
+    JSON.stringify(StorageManager.getAllSession(), null, 2);
+
+
+function logout() {
+    StorageManager.clearSession();
+    window.location.href = 'login.html';
+}
+</script>
+</body>
+</html>

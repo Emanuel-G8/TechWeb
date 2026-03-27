@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coș de Cumpărături</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light">
+<div class="container">
+    <h1>Coș de Cumpărături</h1>
+
+    <div id="msg"></div>
+
+    <h2>Adaugă Produs</h2>
+    <div style="display:flex; gap:10px; align-items:flex-end; margin-bottom:20px;">
+        <div style="flex:1;">
+            <label>Produs</label>
+            <select id="productSelect">
+                <option value="laptop">Laptop - 2500 RON</option>
+                <option value="telefon">Telefon - 1200 RON</option>
+                <option value="tableta">Tabletă - 800 RON</option>
+                <option value="casti">Căști - 150 RON</option>
+            </select>
+        </div>
+        <div style="flex:1;">
+            <label>Cantitate</label>
+            <input type="number" id="quantity" value="1" min="1" max="10">
+        </div>
+        <div>
+            <button onclick="addToCart()">Adaugă în Coș</button>
+        </div>
+    </div>
+
+    <h2>Coșul Tău</h2>
+    <table id="cartTable">
+        <thead>
+            <tr>
+                <th>Produs</th>
+                <th>Cantitate</th>
+                <th>Preț</th>
+                <th>Acțiune</th>
+            </tr>
+        </thead>
+        <tbody id="cartBody">
+        </tbody>
+    </table>
+
+    <h3 id="total" style="margin-top:15px; text-align:right;">TOTAL: 0 RON</h3>
+
+    <br>
+    <button class="btn-danger" onclick="clearCart()">Golește Coșul</button>
+    <a href="dashboard.html"><button>Înapoi la Dashboard</button></a>
+    <button class="btn-danger" onclick="logout()">Deconectare</button>
+</div>
+
+<script src="js/cookies.js"></script>
+<script src="js/storage.js"></script>
+<script>
+    const session = StorageManager.getSession('session');
+    if (!session) {
+        window.location.href = 'login.html';
+    }
+
+    document.body.className = CookieManager.get('theme') || 'light';
+
+    const products = {
+        laptop:  { name: 'Laptop',  price: 2500 },
+        telefon: { name: 'Telefon', price: 1200 },
+        tableta: { name: 'Tabletă', price: 800  },
+        casti:   { name: 'Căști',   price: 150  }
+    };
+
+    let cart = StorageManager.getSession('cart') || {};
+
+    renderCart();
+
+    function addToCart() {
+        const key = document.getElementById('productSelect').value;
+        const qty = parseInt(document.getElementById('quantity').value);
+
+        if (qty < 1 || qty > 10) {
+            showMsg('Cantitatea trebuie să fie între 1 și 10!', 'alert-error');
+            return;
+        }
+
+        cart[key] = (cart[key] || 0) + qty;
+        StorageManager.setSession('cart', cart);
+        renderCart();
+        showMsg(`${products[key].name} adăugat în coș!`, 'alert-success');
+    }
+
+    function removeItem(key) {
+        delete cart[key];
+        StorageManager.setSession('cart', cart);
+        renderCart();
+    }
+
+    function clearCart() {
+        cart = {};
+        StorageManager.setSession('cart', cart);
+        renderCart();
+        showMsg('Coșul a fost golit!', 'alert-success');
+    }
+
+    function renderCart() {
+        const tbody = document.getElementById('cartBody');
+        let total   = 0;
+        let rows    = '';
+
+        for (const key in cart) {
+            const item     = products[key];
+            const lineTotal = item.price * cart[key];
+            total += lineTotal;
+            rows += `
+                <tr>
+                    <td>${item.name}</td>
+                    <td>${cart[key]}</td>
+                    <td>${lineTotal} RON</td>
+                    <td>
+                        <button class="btn-danger" onclick="removeItem('${key}')">Șterge</button>
+                    </td>
+                </tr>`;
+        }
+
+        tbody.innerHTML = rows || '<tr><td colspan="4" style="text-align:center;">Coșul este gol</td></tr>';
+        document.getElementById('total').textContent = `TOTAL: ${total} RON`;
+    }
+
+    function showMsg(text, cssClass) {
+        const msg = document.getElementById('msg');
+        msg.className   = cssClass;
+        msg.textContent = text;
+        setTimeout(() => { msg.textContent = ''; msg.className = ''; }, 2500);
+    }
+
+    function logout() {
+        StorageManager.clearSession();
+        window.location.href = 'login.html';
+    }
+</script>
+</body>
+</html>

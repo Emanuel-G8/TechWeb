@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preferințe</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="light">
+<div class="container">
+
+    <h1>Setări Preferințe</h1>
+
+    <div id="msg"></div>
+
+    <form id="preferencesForm">
+        <label>Nume Utilizator</label>
+        <input type="text" id="username" placeholder="Introduceți numele">
+
+        <br><br>
+
+        <label>Temă</label>
+        <select id="theme">
+            <option value="light">Luminos</option>
+            <option value="dark">Întunecat</option>
+        </select>
+
+        <br><br>
+
+        <label>Limbă</label>
+        <select id="language">
+            <option value="ro">Română</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+        </select>
+
+        <br><br>
+
+        <label>Dimensiune Font</label>
+        <select id="fontSize">
+            <option value="14">14px</option>
+            <option value="16">16px</option>
+            <option value="18">18px</option>
+            <option value="20">20px</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">Salvează Preferințele</button>
+    </form>
+
+    <br>
+    <a href="index.html"><button>Înapoi</button></a>
+
+</div>
+
+<script src="js/cookies.js"></script>
+<script src="js/storage.js"></script>
+<script>
+
+    document.body.className = CookieManager.get('theme') || 'light';
+
+    document.getElementById('username').value = CookieManager.get('username') || '';
+    document.getElementById('theme').value    = CookieManager.get('theme') || 'light';
+    document.getElementById('language').value = StorageManager.getLocal('language') || 'ro';
+    document.getElementById('fontSize').value = StorageManager.getLocal('fontSize') || '16';
+
+    document.getElementById('preferencesForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const theme    = document.getElementById('theme').value;
+        const language = document.getElementById('language').value;
+        const fontSize = document.getElementById('fontSize').value;
+
+        CookieManager.set('username', username, 365);
+        CookieManager.set('theme', theme, 365);
+
+        StorageManager.setLocal('language', language);
+        StorageManager.setLocal('fontSize', fontSize);
+
+        document.body.className = theme;
+
+        const msg = document.getElementById('msg');
+        msg.className   = 'alert-success';
+        msg.textContent = 'Preferințe salvate cu succes!';
+
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 1500);
+    });
+</script>
+</body>
+</html>

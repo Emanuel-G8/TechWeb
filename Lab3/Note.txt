@@ -1,0 +1,51 @@
+1. Care sunt cele 4 metode HTTP principale si cand se foloseste fiecare?
+
+GET - folosit pentru a cere date de la server. Cand deschizi o pagina web,
+browserul face un GET. Nu trimite date sensibile, totul e vizibil in URL.
+
+POST - folosit pentru a trimite date la server. Cand te loghezi sau trimiti
+un formular, browserul face un POST. Datele sunt ascunse in corpul cererii.
+
+PUT - folosit pentru a actualiza ceva ce exista deja pe server. De exemplu,
+cand iti editezi profilul pe un site.
+
+DELETE - folosit pentru a sterge ceva de pe server. De exemplu, cand stergi
+un cont sau un fisier.
+
+---
+
+2. Ce semnifica codurile de status: 200, 301, 400, 401, 403, 404, 500?
+
+200 OK - totul a mers bine, serverul a raspuns cu succes.
+
+301 Moved Permanently - pagina s-a mutat definitiv la o alta adresa,
+browserul te redirectioneaza automat.
+
+400 Bad Request - cererea trimisa de browser este gresita sau incompleta,
+serverul nu o intelege.
+
+401 Unauthorized - trebuie sa fii autentificat pentru a accesa resursa,
+nu esti logat.
+
+403 Forbidden - esti logat dar nu ai permisiunea sa accesezi resursa
+respectiva.
+
+404 Not Found - pagina sau resursa cautata nu exista pe server.
+
+500 Internal Server Error - a aparut o eroare pe server, nu e vina
+browserului sau a utilizatorului.
+
+---
+
+3. Care este diferenta intre HTTP si HTTPS?
+
+HTTP (HyperText Transfer Protocol) este protocolul de baza prin care
+browserul comunica cu serverul. Problema este ca datele sunt trimise
+necriptate, adica oricine intercepteaza conexiunea poate citi ce trimiti,
+inclusiv parole sau date personale.
+
+HTTPS este acelasi protocol dar cu un strat de securitate adaugat numit
+SSL/TLS. Datele sunt criptate inainte sa fie trimise, deci chiar daca
+cineva le intercepteaza nu le poate citi. Se recunoaste dupa lacatul
+afisat in bara de adrese a browserului.
+
